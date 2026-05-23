@@ -21,7 +21,7 @@ current_dir = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=os.path.join(Path(__file__).parent,
           "static")), name="static")
 
-DATABASE_PATH = current_dir / "activities.sqlite"
+DATABASE_PATH = Path(os.getenv("DATABASE_PATH", current_dir / "activities.sqlite"))
 
 # Seed data for the database on first run
 INITIAL_ACTIVITIES = {
