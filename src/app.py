@@ -219,20 +219,23 @@ def signup_for_activity(activity_name: str, email: str):
         raise HTTPException(status_code=404, detail="Activity not found")
 
     # Validate student is not already signed up and add them in a single transaction
-    with get_connection() as connection:
-        existing = connection.execute(
-            "SELECT 1 FROM registrations WHERE activity_name = ? AND email = ?",
-            (activity_name, email),
-        ).fetchone()
-        if existing:
-            raise HTTPException(
-                status_code=400,
-                detail="Student is already signed up"
+    try:
+        with get_connection() as connection:
+            existing = connection.execute(
+                "SELECT 1 FROM registrations WHERE activity_name = ? AND email = ?",
+                (activity_name, email),
+            ).fetchone()
+            if existing:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Student is already signed up"
+                )
+            connection.execute(
+                "INSERT INTO registrations (activity_name, email) VALUES (?, ?)",
+                (activity_name, email),
             )
-        connection.execute(
-            "INSERT INTO registrations (activity_name, email) VALUES (?, ?)",
-            (activity_name, email),
-        )
+    except sqlite3.IntegrityError:
+        raise HTTPException(status_code=400, detail="Student is already signed up")
 
     return {"message": f"Signed up {email} for {activity_name}"}
 
