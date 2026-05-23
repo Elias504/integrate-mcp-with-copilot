@@ -162,7 +162,11 @@ def fetch_participants(activity_name: str) -> list[str]:
         return [row["email"] for row in rows]
 
 
-def fetch_all_activities() -> dict[str, dict]:
+def fetch_all_activities(
+    search: str | None = None,
+    schedule: str | None = None,
+    sort: str = "name_asc",
+) -> dict[str, dict]:
     with get_connection() as connection:
         rows = connection.execute(
             """
@@ -192,7 +196,40 @@ def fetch_all_activities() -> dict[str, dict]:
         if row["email"] is not None:
             activities[activity_name]["participants"].append(row["email"])
 
-    return activities
+    activity_items = list(activities.items())
+
+    if search:
+        search_term = search.strip().lower()
+        if search_term:
+            activity_items = [
+                (name, details)
+                for name, details in activity_items
+                if search_term in name.lower()
+                or search_term in details["description"].lower()
+            ]
+
+    if schedule:
+        schedule_term = schedule.strip().lower()
+        if schedule_term:
+            activity_items = [
+                (name, details)
+                for name, details in activity_items
+                if schedule_term in details["schedule"].lower()
+            ]
+
+    if sort == "name_desc":
+        activity_items.sort(key=lambda item: item[0].lower(), reverse=True)
+    elif sort == "availability_desc":
+        activity_items.sort(
+            key=lambda item: (
+                -(item[1]["max_participants"] - len(item[1]["participants"])),
+                item[0].lower(),
+            )
+        )
+    else:
+        activity_items.sort(key=lambda item: item[0].lower())
+
+    return dict(activity_items)
 
 
 @app.on_event("startup")
@@ -206,8 +243,12 @@ def root():
 
 
 @app.get("/activities")
-def get_activities():
-    return fetch_all_activities()
+def get_activities(
+    search: str | None = None,
+    schedule: str | None = None,
+    sort: str = "name_asc",
+):
+    return fetch_all_activities(search=search, schedule=schedule, sort=sort)
 
 
 @app.post("/activities/{activity_name}/signup")

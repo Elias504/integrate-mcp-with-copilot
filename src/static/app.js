@@ -1,20 +1,49 @@
 document.addEventListener("DOMContentLoaded", () => {
   const activitiesList = document.getElementById("activities-list");
   const activitySelect = document.getElementById("activity");
+  const searchInput = document.getElementById("activity-search");
+  const scheduleFilter = document.getElementById("schedule-filter");
+  const sortSelect = document.getElementById("activity-sort");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
+
+  function buildActivitiesUrl() {
+    const queryParams = new URLSearchParams();
+    const search = searchInput.value.trim();
+    const schedule = scheduleFilter.value;
+    const sort = sortSelect.value;
+
+    if (search) {
+      queryParams.set("search", search);
+    }
+    if (schedule) {
+      queryParams.set("schedule", schedule);
+    }
+    if (sort) {
+      queryParams.set("sort", sort);
+    }
+
+    const query = queryParams.toString();
+    return query ? `/activities?${query}` : "/activities";
+  }
 
   // Function to fetch activities from API
   async function fetchActivities() {
     try {
-      const response = await fetch("/activities");
+      const selectedSchedule = scheduleFilter.value;
+      const response = await fetch(buildActivitiesUrl());
       const activities = await response.json();
 
       // Clear loading message
       activitiesList.innerHTML = "";
+      activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
+
+      const schedules = new Set();
 
       // Populate activities list
       Object.entries(activities).forEach(([name, details]) => {
+        schedules.add(details.schedule);
+
         const activityCard = document.createElement("div");
         activityCard.className = "activity-card";
 
@@ -55,6 +84,21 @@ document.addEventListener("DOMContentLoaded", () => {
         option.textContent = name;
         activitySelect.appendChild(option);
       });
+
+      scheduleFilter.innerHTML = '<option value="">All schedules</option>';
+      Array.from(schedules)
+        .sort((a, b) => a.localeCompare(b))
+        .forEach((schedule) => {
+          const option = document.createElement("option");
+          option.value = schedule;
+          option.textContent = schedule;
+          scheduleFilter.appendChild(option);
+        });
+      scheduleFilter.value = selectedSchedule;
+
+      if (Object.keys(activities).length === 0) {
+        activitiesList.innerHTML = "<p>No activities match your current filters.</p>";
+      }
 
       // Add event listeners to delete buttons
       document.querySelectorAll(".delete-btn").forEach((button) => {
@@ -154,6 +198,10 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error signing up:", error);
     }
   });
+
+  searchInput.addEventListener("input", fetchActivities);
+  scheduleFilter.addEventListener("change", fetchActivities);
+  sortSelect.addEventListener("change", fetchActivities);
 
   // Initialize app
   fetchActivities();
