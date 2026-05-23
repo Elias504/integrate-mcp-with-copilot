@@ -248,18 +248,16 @@ def unregister_from_activity(activity_name: str, email: str):
     if activity is None:
         raise HTTPException(status_code=404, detail="Activity not found")
 
-    # Validate student is signed up
-    if email not in fetch_participants(activity_name):
-        raise HTTPException(
-            status_code=400,
-            detail="Student is not signed up for this activity"
-        )
-
-    # Remove student
+    # Remove student atomically; check rowcount to detect missing registration
     with get_connection() as connection:
-        connection.execute(
+        cursor = connection.execute(
             "DELETE FROM registrations WHERE activity_name = ? AND email = ?",
             (activity_name, email),
         )
+        if cursor.rowcount == 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Student is not signed up for this activity"
+            )
 
     return {"message": f"Unregistered {email} from {activity_name}"}
