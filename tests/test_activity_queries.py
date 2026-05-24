@@ -4,6 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from fastapi import HTTPException
+
 
 class ActivityQueryTests(unittest.TestCase):
     @classmethod
@@ -38,6 +40,16 @@ class ActivityQueryTests(unittest.TestCase):
     def test_sort_by_availability_desc(self):
         activities = self.app_module.fetch_all_activities(sort="availability_desc")
         self.assertEqual(next(iter(activities)), "Gym Class")
+
+    def test_get_activities_rejects_invalid_sort(self):
+        with self.assertRaises(HTTPException) as context:
+            self.app_module.get_activities(sort="invalid_sort")
+
+        self.assertEqual(context.exception.status_code, 400)
+        self.assertEqual(
+            context.exception.detail,
+            "Invalid sort value. Supported values: name_asc, name_desc, availability_desc",
+        )
 
 
 if __name__ == "__main__":

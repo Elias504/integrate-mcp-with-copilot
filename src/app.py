@@ -248,6 +248,15 @@ def get_activities(
     schedule: str | None = None,
     sort: str = "name_asc",
 ):
+    valid_sort_values = {"name_asc", "name_desc", "availability_desc"}
+    if sort not in valid_sort_values:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Invalid sort value. Supported values: "
+                "name_asc, name_desc, availability_desc"
+            ),
+        )
     return fetch_all_activities(search=search, schedule=schedule, sort=sort)
 
 
