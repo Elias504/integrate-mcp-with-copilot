@@ -1,12 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   // --- Dark mode ---
-  const themeToggle = document.getElementById("theme-toggle");
+  const themeCheckbox = document.getElementById("theme-checkbox");
   const html = document.documentElement;
 
   function applyTheme(theme) {
     html.setAttribute("data-theme", theme);
-    themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
-    themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+    themeCheckbox.checked = theme === "dark";
   }
 
   function getInitialTheme() {
@@ -17,8 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   applyTheme(getInitialTheme());
 
-  themeToggle.addEventListener("click", () => {
-    const next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  themeCheckbox.addEventListener("change", () => {
+    const next = themeCheckbox.checked ? "dark" : "light";
     localStorage.setItem("theme", next);
     applyTheme(next);
   });
