@@ -1,4 +1,29 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Dark mode ---
+  const themeToggle = document.getElementById("theme-toggle");
+  const html = document.documentElement;
+
+  function applyTheme(theme) {
+    html.setAttribute("data-theme", theme);
+    themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+    themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+  }
+
+  function getInitialTheme() {
+    const saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") return saved;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  applyTheme(getInitialTheme());
+
+  themeToggle.addEventListener("click", () => {
+    const next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    localStorage.setItem("theme", next);
+    applyTheme(next);
+  });
+  // --- End dark mode ---
+
   const activitiesList = document.getElementById("activities-list");
   const activitySelect = document.getElementById("activity");
   const searchInput = document.getElementById("activity-search");
