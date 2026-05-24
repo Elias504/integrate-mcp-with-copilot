@@ -94,7 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
           option.textContent = schedule;
           scheduleFilter.appendChild(option);
         });
-      scheduleFilter.value = selectedSchedule;
+      if (Array.from(scheduleFilter.options).some(opt => opt.value === selectedSchedule)) {
+        scheduleFilter.value = selectedSchedule;
+      }
 
       if (Object.keys(activities).length === 0) {
         activitiesList.innerHTML = "<p>No activities match your current filters.</p>";
