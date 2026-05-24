@@ -15,6 +15,22 @@
     <main>
       <section id="activities-container">
         <h3>Available Activities</h3>
+        <div id="activities-controls">
+          <input
+            type="search"
+            id="activity-search"
+            placeholder="Search by name or description"
+            aria-label="Search activities"
+          />
+          <select id="schedule-filter" aria-label="Filter by schedule">
+            <option value="">All schedules</option>
+          </select>
+          <select id="activity-sort" aria-label="Sort activities">
+            <option value="name_asc">Sort: Name (A-Z)</option>
+            <option value="name_desc">Sort: Name (Z-A)</option>
+            <option value="availability_desc">Sort: Most spots first</option>
+          </select>
+        </div>
         <div id="activities-list">
           <!-- Activities will be loaded here -->
           <p>Loading activities...</p>
