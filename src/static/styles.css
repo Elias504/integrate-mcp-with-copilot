@@ -1,3 +1,69 @@
+:root {
+  --color-bg: #f5f5f5;
+  --color-text: #333;
+  --color-header-bg: #1a237e;
+  --color-header-text: #ffffff;
+  --color-section-bg: #ffffff;
+  --color-section-border: #ddd;
+  --color-section-heading: #1a237e;
+  --color-card-bg: #f9f9f9;
+  --color-card-border: #ddd;
+  --color-card-heading: #0066cc;
+  --color-input-bg: #ffffff;
+  --color-input-border: #ddd;
+  --color-input-text: #333;
+  --color-btn-bg: #1a237e;
+  --color-btn-hover: #3949ab;
+  --color-participants-heading: #1a237e;
+  --color-participants-divider: #ccc;
+  --color-participants-muted: #777;
+  --color-delete-btn: #c62828;
+  --color-delete-btn-hover-bg: #ffebee;
+  --color-footer: #666;
+  --color-success-bg: #e8f5e9;
+  --color-success-text: #2e7d32;
+  --color-success-border: #a5d6a7;
+  --color-error-bg: #ffebee;
+  --color-error-text: #c62828;
+  --color-error-border: #ef9a9a;
+  --color-info-bg: #d1ecf1;
+  --color-info-text: #0c5460;
+  --color-info-border: #bee5eb;
+}
+
+html[data-theme="dark"] {
+  --color-bg: #121212;
+  --color-text: #e0e0e0;
+  --color-header-bg: #0d1257;
+  --color-header-text: #e8eaf6;
+  --color-section-bg: #1e1e1e;
+  --color-section-border: #444;
+  --color-section-heading: #7986cb;
+  --color-card-bg: #2a2a2a;
+  --color-card-border: #444;
+  --color-card-heading: #64b5f6;
+  --color-input-bg: #2a2a2a;
+  --color-input-border: #555;
+  --color-input-text: #e0e0e0;
+  --color-btn-bg: #3949ab;
+  --color-btn-hover: #5c6bc0;
+  --color-participants-heading: #7986cb;
+  --color-participants-divider: #555;
+  --color-participants-muted: #aaa;
+  --color-delete-btn: #ef9a9a;
+  --color-delete-btn-hover-bg: #4a1a1a;
+  --color-footer: #aaa;
+  --color-success-bg: #1b3a21;
+  --color-success-text: #81c784;
+  --color-success-border: #388e3c;
+  --color-error-bg: #3e1a1a;
+  --color-error-text: #ef9a9a;
+  --color-error-border: #c62828;
+  --color-info-bg: #0d2d35;
+  --color-info-text: #80cbc4;
+  --color-info-border: #00796b;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -8,24 +74,91 @@
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
-  color: #333;
+  color: var(--color-text);
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: var(--color-bg);
+  transition: background-color 0.2s, color 0.2s;
 }
 
 header {
+  position: relative;
   text-align: center;
   padding: 20px 0;
   margin-bottom: 30px;
-  background-color: #1a237e;
-  color: white;
+  background-color: var(--color-header-bg);
+  color: var(--color-header-text);
   border-radius: 5px;
 }
 
 header h1 {
   margin-bottom: 10px;
+}
+
+#theme-toggle {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-header-text);
+  cursor: pointer;
+  font-size: 16px;
+  user-select: none;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 22px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+#theme-checkbox:checked + .toggle-slider {
+  background-color: rgba(255, 255, 255, 0.45);
+}
+
+#theme-checkbox:checked + .toggle-slider::before {
+  transform: translateX(18px);
+}
+
+#theme-toggle:hover .toggle-slider {
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 main {
@@ -42,19 +175,20 @@ main {
 }
 
 section {
-  background-color: white;
+  background-color: var(--color-section-bg);
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 500px;
+  transition: background-color 0.2s;
 }
 
 section h3 {
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #ddd;
-  color: #1a237e;
+  border-bottom: 1px solid var(--color-section-border);
+  color: var(--color-section-heading);
 }
 
 #activities-controls {
@@ -67,22 +201,25 @@ section h3 {
 #activities-controls select {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-input-border);
   border-radius: 4px;
   font-size: 14px;
+  background-color: var(--color-input-bg);
+  color: var(--color-input-text);
 }
 
 .activity-card {
   margin-bottom: 15px;
   padding: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-card-border);
   border-radius: 5px;
-  background-color: #f9f9f9;
+  background-color: var(--color-card-bg);
+  transition: background-color 0.2s;
 }
 
 .activity-card h4 {
   margin-bottom: 10px;
-  color: #0066cc;
+  color: var(--color-card-heading);
 }
 
 .activity-card p {
@@ -93,12 +230,12 @@ section h3 {
 .participants-container {
   margin-top: 15px;
   padding-top: 12px;
-  border-top: 1px dashed #ccc;
+  border-top: 1px dashed var(--color-participants-divider);
 }
 
 .participants-section h5 {
   margin-bottom: 8px;
-  color: #1a237e;
+  color: var(--color-participants-heading);
   font-size: 16px;
 }
 
@@ -128,7 +265,7 @@ section h3 {
 .delete-btn {
   background: none;
   border: none;
-  color: #c62828;
+  color: var(--color-delete-btn);
   cursor: pointer;
   font-size: 14px;
   padding: 2px 5px;
@@ -137,11 +274,11 @@ section h3 {
 }
 
 .delete-btn:hover {
-  background-color: #ffebee;
+  background-color: var(--color-delete-btn-hover-bg);
 }
 
 .participants-section p {
-  color: #777;
+  color: var(--color-participants-muted);
   font-style: italic;
 }
 
@@ -159,13 +296,15 @@ section h3 {
 .form-group select {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-input-border);
   border-radius: 4px;
   font-size: 16px;
+  background-color: var(--color-input-bg);
+  color: var(--color-input-text);
 }
 
 button {
-  background-color: #1a237e;
+  background-color: var(--color-btn-bg);
   color: white;
   border: none;
   padding: 10px 15px;
@@ -176,7 +315,7 @@ button {
 }
 
 button:hover {
-  background-color: #3949ab;
+  background-color: var(--color-btn-hover);
 }
 
 .message {
@@ -186,21 +325,21 @@ button:hover {
 }
 
 .success {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #a5d6a7;
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
 }
 
 .error {
-  background-color: #ffebee;
-  color: #c62828;
-  border: 1px solid #ef9a9a;
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
 }
 
 .info {
-  background-color: #d1ecf1;
-  color: #0c5460;
-  border: 1px solid #bee5eb;
+  background-color: var(--color-info-bg);
+  color: var(--color-info-text);
+  border: 1px solid var(--color-info-border);
 }
 
 .hidden {
@@ -211,5 +350,5 @@ footer {
   text-align: center;
   margin-top: 30px;
   padding: 20px;
-  color: #666;
+  color: var(--color-footer);
 }

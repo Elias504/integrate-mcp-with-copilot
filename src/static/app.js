@@ -1,4 +1,28 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Dark mode ---
+  const themeCheckbox = document.getElementById("theme-checkbox");
+  const html = document.documentElement;
+
+  function applyTheme(theme) {
+    html.setAttribute("data-theme", theme);
+    themeCheckbox.checked = theme === "dark";
+  }
+
+  function getInitialTheme() {
+    const saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") return saved;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  applyTheme(getInitialTheme());
+
+  themeCheckbox.addEventListener("change", () => {
+    const next = themeCheckbox.checked ? "dark" : "light";
+    localStorage.setItem("theme", next);
+    applyTheme(next);
+  });
+  // --- End dark mode ---
+
   const activitiesList = document.getElementById("activities-list");
   const activitySelect = document.getElementById("activity");
   const searchInput = document.getElementById("activity-search");
